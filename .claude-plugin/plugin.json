@@ -8,5 +8,6 @@
     "email": "jerry.h2oslabs@gmail.com"
   },
   "keywords": ["agent", "berth", "compiler", "package"],
-  "commands": "./commands"
+  "commands": ["./commands/berth-compiler.md"],
+  "skills": ["./skills/berth-compiler"]
 }
