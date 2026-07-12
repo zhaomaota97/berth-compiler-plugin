@@ -2,14 +2,34 @@
   "name": "berth-compiler",
   "displayName": "Berth Compiler",
   "version": "2.1.0",
-  "description": "Full-auto Berth compiler — converts any agent into a Berth package, validates, and auto-publishes.",
+  "description": "Full-auto Berth compiler — converts any agent into a Berth package, validates, and auto-publishes. Includes templates (10), guides (8), industry patterns (3), agents (3), and worked examples.",
   "author": {
     "name": "Berth Platform",
     "email": "jerry.h2oslabs@gmail.com"
   },
   "keywords": ["agent", "berth", "compiler", "package"],
-  "commands": ["./commands/berth-compiler.md"],
-  "skills": ["./skills/berth-compiler"],
-  "agents": ["./agents/brainstorm.md", "./agents/grill-me.md", "./agents/validator.md"]
+  "skills": [
+    {
+      "name": "berth-compiler",
+      "description": "Auto-compile any agent into a Berth package and publish it.",
+      "file": "skills/berth-compiler/SKILL.md"
+    }
+  ],
+  "agents": [
+    {
+      "name": "brainstorm",
+      "description": "Explore a domain: workflows, edge cases, industry standards.",
+      "file": "agents/brainstorm.md"
+    },
+    {
+      "name": "grill-me",
+      "description": "5-round design interview to eliminate ambiguity.",
+      "file": "agents/grill-me.md"
+    },
+    {
+      "name": "validator",
+      "description": "Post-generation compliance check — validates structure, UX, tools, smoke, pricing before publish.",
+      "file": "agents/validator.md"
+    }
+  ]
 }
-
