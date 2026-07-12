@@ -73,56 +73,86 @@ The chosen model goes into `agent.ts` as `berth("<model-id>")`.
 
 ---
 
-## Phase 1: Thorough Interview (MANDATORY — don't skip)
+## Phase 1: Spec-Driven Interview (MANDATORY — don't skip)
 
-This is the most important phase. **Ask at least 3-5 rounds of questions** before writing a single line of code. The quality of the agent depends entirely on the quality of this interview.
+This is the most important phase. You will create a **living spec file** that grows with each answer. The user can stop anytime — the spec persists.
 
-**CRITICAL — one round at a time**: Ask ONLY the current round's questions. Wait for the user to answer before moving to the next round. NEVER dump multiple rounds at once. Each round should be a separate exchange. If the user gives a short or vague answer, dig deeper within the SAME round before moving on.
+### How it works
 
-### Round 1: Domain & Role (always ask)
+1. **Create `AGENT_SPEC.md`** in the user's project root. It starts as a skeleton with empty sections.
+2. **Each turn: ask ONE question only.** Based on which section of the spec is least complete.
+3. **After each answer: update the spec immediately.** Fill in the relevant section with what the user said.
+4. **Show a brief status** after each update: "已填写: 领域角色, 输入输出 / 待确认: 流程工具, 领域知识, 定价分发"
+5. **If the user says "继续"**: ask the next most important unanswered question.
+6. **If the user says "先这样" or seems to want to stop**: save the spec and tell them they can resume anytime with `/berth-compiler`.
+7. **When all sections have enough detail**: show the completed spec and ask "可以开始生成代码了吗？"
 
-Ask these one at a time, building on the user's answers:
+### Spec skeleton
 
-- What industry/domain does this agent operate in?
-- What specific job role does it automate? (e.g., "麦当劳出餐前最后一道核查" not just "餐饮质检")
-- Who would use this agent? (一线员工? 经理? 客户?)
-- What happens if the agent makes a mistake? (后果严重 = more approval gates, higher pricing)
+Create this file and fill it in progressively:
 
-### Round 2: Input & Output (always ask)
+```markdown
+# Agent Spec: [待定]
 
-Ask these one at a time, building on the user's answers:
+## 领域角色
+<!-- 行业、具体岗位、用户、出错后果 -->
+[待填写]
 
-- What exactly does the user provide? Show me 3 concrete examples.
-- What exactly does the agent produce? Format? Structure? Who reads it?
-- What are the **minimum required inputs** to get a useful result? (This feeds the guardrail)
-- Are there edge cases where the input is incomplete? How should the agent handle that?
+## 输入输出
+<!-- 用户给什么（3个具体例子）、产出什么格式、谁看、最少需要什么信息 -->
+[待填写]
 
-### Round 3: Process & Tools (always ask)
+## 流程工具
+<!-- 步骤拆解、确定性步骤（→tools）、LLM判断步骤、审批步骤 -->
+[待填写]
 
-Ask these one at a time, building on the user's answers:
+## 领域知识
+<!-- SOP/检查清单/法规/常见错误 -->
+[待填写]
 
-- Walk me through the agent's step-by-step process.
-- Which steps are deterministic (can be coded as tools)?
-- Which steps require LLM judgment?
-- Which steps need human approval? Under what conditions?
+## 定价分发
+<!-- 每次价值、私有/公开、中文名、emoji -->
+[待填写]
+```
 
-### Round 4: Domain Knowledge (ask for complex domains)
+### Question bank (pick ONE at a time)
 
-Ask these one at a time, building on the user's answers:
+Always pick the single most important unanswered question. Rough priority order:
 
-- What checklists, SOPs, or rulebooks exist in this domain?
-- What are the most common mistakes humans make? (The agent should catch these)
-- What regulations or standards apply?
+**Domain & Role** (fill first):
+- 这个 Agent 服务什么行业？解决什么具体问题？
+- 它替代了谁的什么工作？给一个具体的岗位描述。
+- 谁会用它？（一线员工 / 经理 / 客户？）
+- 如果它出错了，后果多严重？
 
-### Round 5: Pricing & Distribution (always ask)
+**Input & Output**:
+- 用户给它什么？给 3 个具体输入例子。
+- 它产出什么？什么格式？给谁看？
+- 完成任务最少需要哪些信息？缺了怎么办？
 
-Ask these one at a time, building on the user's answers:
+**Process & Tools**:
+- 一步步描述完成任务的流程。
+- 哪些步骤是确定性操作（可以写成代码工具）？
+- 哪些步骤需要 LLM 判断？
+- 哪些操作需要人工审批？
 
-- How much value does this agent create per run? (指导定价)
-- Should it be private (仅自己) or public (提交审核)?
-- What's a good Chinese name? An emoji icon?
+**Domain Knowledge**:
+- 这个领域有检查清单或 SOP 吗？
+- 人最容易犯什么错？（Agent 应该能发现）
+- 有什么法规或标准要遵守？
 
-**Don't worry about asking too many questions.** Users who are serious about building agents will appreciate the thoroughness. If the user provides incomplete answers, push back gently and ask for specifics. Vague agents produce garbage outputs.
+**Pricing & Distribution**:
+- 每次调用创造多大价值？（5-40 积分）
+- 仅自己用还是公开上架？
+- 起个中文名？选个 emoji？
+
+### Rules
+
+- **STRICT: one question per turn.** Never ask two questions in one message.
+- **Update the spec after EVERY answer.** Don't wait — write immediately.
+- **If the answer is vague, follow up ONCE.** "能再具体一点吗？比如……"
+- **Spec lives in the user's project.** They can read it anytime to see progress.
+- **Resumable.** If the user comes back later, read the existing spec and pick up where it left off.
 
 ---
 
