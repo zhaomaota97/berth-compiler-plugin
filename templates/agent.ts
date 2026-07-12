@@ -12,7 +12,7 @@ const berth = createDeepSeek({
 
 export default defineAgent({
   model: berth("MODEL_ID_PLACEHOLDER"),
-  modelContextWindowTokens: 128_000,
+  modelContextWindowTokens: 1_000_000,
   system: `你是 AGENT_NAME。AGENT_DESCRIPTION。
 
 ## 你的工作方式
