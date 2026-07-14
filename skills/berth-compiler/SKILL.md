@@ -8,6 +8,16 @@ description: Fully automatic Berth Agent compiler. Selects local or competition 
 
 Run the entire process. The user must never coordinate phases, agents, validators, commands, or retries.
 
+## Mandatory version check
+
+Before asking the first workflow question, run:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/berth_api.py" check-update --auto
+```
+
+If it reports `updated: true`, stop this run and tell the user to restart Claude Code so the new Plugin is loaded. Never continue the workflow with the old in-memory Plugin. If the network check is temporarily unavailable, warn briefly and continue; if an update is known but automatic installation fails, stop and report the installer error.
+
 ## Iron rule: one decision per turn
 
 Each conversational turn may ask exactly one question or offer exactly one choice.
@@ -50,14 +60,16 @@ Use `GET /v1/dev/me`. If invalid, ask only for a corrected token after the user 
 
 ### 3. Discover models
 
-After successful token validation, automatically call:
+After successful token validation, fetch the compiler contract and models:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/berth_api.py" \
+BERTH_TOKEN="<token>" python3 "${CLAUDE_PLUGIN_ROOT}/scripts/berth_api.py" \
+  --platform <local|competition> contract
+BERTH_TOKEN="<token>" python3 "${CLAUDE_PLUGIN_ROOT}/scripts/berth_api.py" \
   --platform <local|competition> models
 ```
 
-Choose an enabled model based on complexity, risk, context, and cost. Ask a model choice only when the tradeoff is material, and ask nothing else that turn.
+The `models` command probes every returned model and removes failures from `data`; use `filtered_unavailable` only for diagnostics. Use the contract's canonical model IDs, Smoke schema, Node/Eve versions, ignore rules, upload limit, pricing unit, and runtime semantics. Choose only from filtered `data`, then run `model-probe <model>` once more immediately before generation. Do not use a model that fails. Ask a model choice only when the tradeoff is material.
 
 ### 4. Choose source
 
@@ -93,6 +105,14 @@ Use `templates/` and the relevant guides. Each Package must contain `berth.json`
 
 Preserve source flow, tool contracts, approvals, attachments, schemas, artefacts, failure/retry behavior, and user-visible interactions. Every loaded capability needs business-readable `runtime_ui` text. Never expose `load skill`; `waiting_approval` is waiting, not running.
 
+- Price in **积分** with `pricing.amount_credits`, never RMB cents.
+- Generate Smoke `schema_version: 1` with only `send`, `expect_tool`, `expect_contains`, `expect_approval`, and `expect_question`.
+- Missing required input must call Eve `ask_question` and emit `input_requested`.
+- Check Node/pnpm first. Require Node 24 and never compile Node from source.
+- Run `pnpm install --lockfile-only`; do not install project `node_modules` just to create a lock.
+- Run local builds in a Linux temp copy or compatible container, then remove the temp directory.
+- Record contract version, publish jobs, failed Gates, repairs, and results in `.berth/compiler-state.json`, never tokens.
+
 ## Validate and repair automatically
 
 Dispatch `validator`, generate the lockfile, build, run Smoke Tests, source tests, and relevant project tests. Fix failures narrowly and repeat until green or genuinely blocked. Never weaken valid tests or hand the validator report to the user as homework.
@@ -122,6 +142,25 @@ BERTH_TOKEN="<token>" python3 "${CLAUDE_PLUGIN_ROOT}/scripts/berth_api.py" \
 ```
 
 Follow every job. On Gate failure, fix, bump the version when needed, rebuild fidelity evidence, and retry. Finish with final platform status and Package identifiers.
+
+## Required post-publish feedback
+
+After every successful deployment, generate `问题梳理与优化意见清单.md`. It must cover only Berth platform and Compiler Plugin defects or improvement opportunities—not ordinary defects in the generated Agent's domain logic.
+
+Read `guides/feedback.md` before writing the report.
+
+Use the entire run as evidence: intent misunderstandings, weak interview questions, wrong defaults, contract drift, unnecessary dependencies, packaging/build friction, platform-only Gate failures, diagnostics, model routing, billing wording, manual work, and fidelity limitations caused by platform or Plugin design.
+
+Include run scope, successful publish result, P0/P1/P2 findings, evidence, root cause, and actionable recommendations. If no issue was found, state what was checked and upload a no-findings report.
+
+```bash
+BERTH_TOKEN="<token>" python3 "${CLAUDE_PLUGIN_ROOT}/scripts/berth_api.py" \
+  --platform <local|competition> feedback "问题梳理与优化意见清单.md" \
+  --plugin-version "2.3.0" --operation <create|reconstruct> \
+  --agent-id <agent-id> --publish-job <job-id>
+```
+
+Feedback upload is required for successful completion. Report the returned feedback ID.
 
 ## Resources
 

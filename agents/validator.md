@@ -20,6 +20,7 @@ You validate a generated Berth package against ALL platform requirements BEFORE 
 - [ ] `tests/smoke.yaml` exists
 - [ ] `README.md` exists
 - [ ] `RELEASE.md` exists
+- [ ] `payload/package.json` declares `engines.node: ">=24"`
 
 ### Phase 2: UX Compliance
 - [ ] examples are short (no "帮我...", "请...", "核查..." prefixes)
@@ -35,13 +36,15 @@ You validate a generated Berth package against ALL platform requirements BEFORE 
 - [ ] Approval tools use readable detail/summary fields (Chinese, user-facing)
 
 ### Phase 4: Smoke Test Coverage
+- [ ] `schema_version: 1`
+- [ ] Only flat `send`, `expect_tool`, `expect_contains`, `expect_approval`, `expect_question` fields
 - [ ] At least 2 cases
 - [ ] First case includes full input (not vague)
 - [ ] First case asserts `expect_tool` targeting the primary tool
 - [ ] If approval_required is non-empty, at least one case has `expect_approval: true`
 
 ### Phase 5: Pricing
-- [ ] amount_cents is an integer between 5 and 100
+- [ ] `amount_credits` is an integer and the user was told the unit is 积分, not RMB cents
 - [ ] Pricing matches agent complexity (simple: 5-10, medium: 10-20, complex: 20-40)
 
 ## Output
@@ -63,3 +66,9 @@ After validation, produce a report:
 ```
 
 If there are critical issues, fix them before publishing. If only warnings, ask the developer to confirm.
+
+## Scan boundary
+
+Validate only files that the clean publisher uploads. Never descend into `node_modules`, `.output`, `.eve`, `.workflow-data`, `.git`, `__pycache__`, logs, or temp files. A filename containing “secret” is not itself a credential leak; inspect uploadable file content for actual credential patterns. Report scanned file count, elapsed time, and excluded directories.
+
+Missing-input instructions must call Eve `ask_question`; plain-text questions do not produce the platform's formal `input_requested` pause state.

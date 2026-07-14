@@ -12,7 +12,7 @@
       "name": "berth-compiler",
       "source": ".",
       "description": "Full-auto Berth compiler with one-question interviews and high-fidelity Agent reconstruction.",
-      "version": "2.2.0",
+      "version": "2.4.0",
       "author": {
         "name": "Berth Platform",
         "email": "jerry.h2oslabs@gmail.com"

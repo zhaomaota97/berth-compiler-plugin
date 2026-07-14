@@ -1,8 +1,8 @@
 {
   "name": "berth-compiler",
   "displayName": "Berth Compiler",
-  "version": "2.2.0",
-  "description": "Full-auto Berth compiler with fixed local/competition platforms, token validation, one-question interviews, multi-Agent reconstruction, fidelity verification, and private/public upload.",
+  "version": "2.4.0",
+  "description": "Full-auto Berth compiler with versioned platform contract, model probes, clean packaging, one-question interviews, fidelity verification, publishing, and required post-run feedback.",
   "author": {
     "name": "Berth Platform",
     "email": "jerry.h2oslabs@gmail.com"

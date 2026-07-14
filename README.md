@@ -9,6 +9,8 @@ Full-auto Claude Code Plugin for inventing new Berth Agents or reconstructing ex
 /plugin install berth-compiler@berth-platform
 ```
 
+At startup the Plugin checks the Marketplace version and installs a newer release automatically. Restart Claude Code after an upgrade so the new Plugin code is loaded. Model discovery probes every platform model and filters failed models before Agent generation.
+
 Start a new Claude Code session, then run:
 
 ```text
