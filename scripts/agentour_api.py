@@ -31,7 +31,7 @@ DEFAULT_IGNORES = {
     "__pycache__", ".DS_Store",
 }
 DEFAULT_PATTERNS = {"*.log", "*.tmp", "*.swp", ".agentour-*.log"}
-PLUGIN_VERSION = "2.5.1"
+PLUGIN_VERSION = "2.6.0"
 LATEST_MANIFEST_URL = "https://raw.githubusercontent.com/Onesyn-ai/agentour-claudecode-plugin/master/plugin.json"
 
 
@@ -237,11 +237,16 @@ def cmd_build_test(args):
             "docker", "run", "--rm", *docker_user,
             "-e", "HOME=/tmp", "-e", "AGENTOUR_BUILD=1",
             "-e", "AGENTOUR_URL=http://host.docker.internal:8600",
+            "-e", "AGENTOUR_RUNTIME_TOKEN=build-only-placeholder",
             "-v", f"{work}:/agent", "-w", "/agent", "agentour-runtime:1",
             "sh", "-lc", "pnpm install --frozen-lockfile && pnpm exec eve build",
         ]])
         for command in commands:
-            result = subprocess.run(command, cwd=work, text=True, capture_output=True, timeout=args.timeout)
+            build_env = {**os.environ, "AGENTOUR_BUILD": "1",
+                         "AGENTOUR_URL": "http://127.0.0.1:8600",
+                         "AGENTOUR_RUNTIME_TOKEN": "build-only-placeholder"}
+            result = subprocess.run(command, cwd=work, text=True, capture_output=True,
+                                    timeout=args.timeout, env=build_env)
             if result.returncode != 0:
                 raise SystemExit(f"{' '.join(command)} failed:\n{(result.stdout + result.stderr)[-4000:]}")
     print(json.dumps({"ok": True, "package": str(package),

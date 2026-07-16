@@ -1,12 +1,18 @@
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import { defineAgent } from "eve";
 
-const agentourBase = process.env.AGENTOUR_URL?.replace(/\/$/, "") || "http://agentour-build.invalid";
-const agentourURL = `${agentourBase}/v1/llm`;
+const agentourBase = process.env.AGENTOUR_URL?.replace(/\/$/, "");
+if (!agentourBase) {
+  throw new Error("AGENTOUR_URL is required before the Agent starts");
+}
+const runtimeToken = process.env.AGENTOUR_RUNTIME_TOKEN;
+if (!runtimeToken) {
+  throw new Error("AGENTOUR_RUNTIME_TOKEN is required before the Agent starts");
+}
 
 const agentour = createDeepSeek({
-  baseURL: agentourURL,
-  apiKey: process.env.AGENTOUR_RUNTIME_KEY || "build-only-placeholder",
+  baseURL: `${agentourBase}/v1/llm`,
+  apiKey: runtimeToken,
 });
 
 export default defineAgent({

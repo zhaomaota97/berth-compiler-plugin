@@ -1,7 +1,7 @@
 {
   "name": "agentour-compiler",
   "displayName": "Agentour Compiler",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "description": "Full-auto Agentour compiler with versioned platform contract, model probes, clean packaging, one-question interviews, fidelity verification, publishing, and required post-run feedback.",
   "author": {
     "name": "Agentour Platform",
