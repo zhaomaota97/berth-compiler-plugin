@@ -8,7 +8,21 @@ description: Fully automatic Agentour Agent compiler. Selects local or competiti
 
 Run the entire process. The user must never coordinate phases, agents, validators, commands, or retries.
 
-## Mandatory version check
+## Non-bypassable bootstrap gate
+
+Immediately after reading this Skill, before any explanation or workflow question, run:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/agentour_api.py" bootstrap
+```
+
+Do not introduce the Compiler first and do not enter discovery until it returns
+`ready_for_interview: true`. For `platform_choice_required`, ask only the fixed platform choice and
+rerun with `--target-platform`; for `token_required`, ask only for that token, store it, and rerun;
+for `restart_required` or `blocked`, stop. The visible bootstrap command is the audit proof that
+update, identity, Contract, model probes, and recovery checks ran.
+
+## Bootstrap internals: version check
 
 Before asking the first workflow question, run:
 

@@ -1,7 +1,7 @@
 {
   "name": "agentour-compiler",
   "displayName": "Agentour Compiler",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "Full-auto Agentour compiler with adaptive discovery, Agent updates, platform-backed checkpoints, model probes, fidelity verification and publishing.",
   "author": {
     "name": "Agentour Platform",
