@@ -47,6 +47,10 @@ SHA-256. Continue saved Validation, Build, Eval and Publish Job IDs; never resub
 Upload a clean checkpoint before Package-changing stage transitions and mark terminal tasks completed
 or cancelled. Never persist the token or provider secrets.
 
+Record start, finish and duration for discovery, conversion, environment preparation, local
+validation, platform validation, remote Build, Smoke/Evals, upload and publish. Show the real current
+stage and never label the entire Compiler run as “上传”.
+
 ### 1. Choose platform
 
 The first unresolved message must ask only:
@@ -178,7 +182,13 @@ Revalidate the token immediately before upload. Present one compact summary of p
 
 Only after that explicit confirmation, run the paid-resource remote Build Gate. Do not run it during brainstorming, grilling, local validation, visibility selection, or while waiting for upload confirmation. A cached Build does not consume a new E2B build quota.
 
+Immediately before Build, run `build-preflight` to verify E2B service configuration, Runtime Profile
+template, active capacity, hourly/daily quota, Node and Eve contract. If unavailable, preserve the task
+and Package checkpoint rather than starting a doomed Build.
+
 ```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/agentour_api.py" \
+  --platform <local|competition> build-preflight
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/agentour_api.py" \
   --platform <local|competition> remote-build packages/<agent-id>
 ```
